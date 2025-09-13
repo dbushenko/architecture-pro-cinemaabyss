@@ -157,3 +157,5 @@ tests/postman/reports/
 
 # Emacs TAGS file
 TAGS
+
+**/package-lock.json
