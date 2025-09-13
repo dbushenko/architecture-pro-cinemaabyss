@@ -1,4 +1,4 @@
-@startuml "next-container"
+@startuml "cinema-container"
 !NEW_C4_STYLE=1
 !include ../C4_Container.puml
 
