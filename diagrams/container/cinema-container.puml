@@ -1,0 +1,84 @@
+@startuml "next-container"
+!NEW_C4_STYLE=1
+!include ../C4_Container.puml
+
+title "Кинобездна"
+
+' left to right direction
+
+Person(user, "Пользователь", "Пользователь онлайн-кинотеатра")
+Person(support, "Техподдержка", "Техподдержка онлайн-кинотеатра")
+
+System_Ext(payments_sys,"Платежная система")
+System_Ext(recommendations_sys,"Сервис рекомендаций")
+System_Ext(video_sys,"Онлайн-кинотеатры")
+
+System_Boundary(abyss, "Онлайн-кинотеатр 'Кинобездна'") {
+  Container(support_apigw, "Support API Gateway", "Kong", "API-шлюз для команды техподдержки")
+  Container(apigw, "API Gateway", "Clojure", "Обратный прокси-сервис, feature-toggle, реализует постепенное переключение на новый функционал")
+
+  Container(payments, "Payments Service", "Java, Spring", "Сервис оплаты подписки")
+  ContainerDb(payments_db, "Payments DB", "PostgreSQL", "Данные, необходимые для платежа; проведенные оплаты")
+
+  Container(recommendations, "Recommendations Service", "Java, Spring", "Сервис рекомендаций")
+  ContainerDb(recommendations_cache, "Recommendations Cache", "Redis", "Кэш рекомендаций фильмов для пользователей")
+  ContainerQueue(recommendations_queue, "Recommendations Queue", "RabbitMQ", "Очередь рекомендаций от стороннего сервиса")
+
+  Container(video, "Video Streaming Service", "Java, Spring", "Сервис, реализующий стриминг видео от онлайн-кинотеаторов или из скачанных файлов")
+  ContainerDb(video_db, "Video DB", "PostgreSQL")
+  ContainerDb(video_s3, "Video S3 Storage", "MinIO")
+  Container(video_server, "Streaming Server", "Universal Media Server", "Сервис, позволяющий стримить файлы из S3")
+
+  Container(user_service, "User Service", "Java, Spring", "Позволяет регистрировать и идентифицировать пользователей")
+  ContainerDb(user_db, "User DB", "PostgreSQL")
+  System(keycloak, "Keycloak")
+
+  Container(subscr, "Subscriptions Service", "Java, Spring", "Управляет подписками")
+  ContainerDb(subscr_db, "Subscriptions DB", "PostgreSQL")
+
+  Container(disc, "Discounts Service", "Java, Spring", "Управляет скидками")
+  ContainerDb(disc_db, "Discounts DB", "PostgreSQL")
+
+  Container(info, "Media Info Service", "Java, Spring", "Предоставляет данные о фильмах")
+  ContainerDb(info_db, "Media Info DB", "PostgreSQL")
+}
+
+Rel(apigw, disc, "Uses", "REST")
+Rel(disc, disc_db, "")
+
+Rel(apigw, info, "Uses", "REST")
+Rel(info, info_db, "")
+Rel(info, video_sys, "")
+
+Rel(apigw, subscr, "Uses", "REST")
+Rel(support_apigw, subscr, "Uses", "REST")
+Rel(subscr, subscr_db, "")
+Rel(subscr, payments, "")
+
+Rel(apigw, user_service, "Uses", "REST")
+Rel(user_service, keycloak, "")
+Rel(support_apigw, user_service, "")
+Rel(user_service, user_db, "")
+
+Rel(apigw, video, "Uses", "REST")
+Rel(video, video_db, "")
+Rel(video, video_s3, "")
+Rel(video, video_server, "")
+Rel(video, video_sys, "")
+Rel(video_server, video_s3, "")
+
+Rel(apigw, recommendations, "Uses", "REST")
+Rel(recommendations, recommendations_cache,"")
+Rel(recommendations_queue, recommendations,"")
+Rel(recommendations_sys, recommendations_queue,"")
+
+Rel(support_apigw, payments, , "Uses", "REST"))
+Rel(apigw, payments, "Uses", "REST")
+Rel(payments, payments_db, "")
+Rel(payments, payments_sys, "")
+
+Rel(user, apigw, "Uses", "REST")
+Rel(support, support_apigw, "Uses", "REST")
+
+
+@enduml
