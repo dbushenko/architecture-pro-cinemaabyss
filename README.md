@@ -4,6 +4,14 @@
 
 ![Целевая экосистема](diagrams/container/cinema-container.png)
 
+## Тесты events-service
+
+![Тесты прошли](tests/tests.png)
+![Состояние топиков](tests/topics.png)
+![Movies](tests/movies-topic.png)
+![Payments](tests/payments-topic.png)
+![Users](tests/users-topic.png)
+
 ## Обзор.
  В проекте реализована следующая функциональность:
 
