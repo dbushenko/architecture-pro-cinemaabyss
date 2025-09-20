@@ -97,10 +97,15 @@ services:
     environment:
       PORT: 8082
       KAFKA_BROKERS: kafka:9092
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/api/events/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     networks:
       - cinemaabyss-network
 
-  # Proxy Service (API Gateway)
+    # Proxy Service (API Gateway)
   proxy-service:
     build:
       context: ./src/microservices/proxy
