@@ -70,7 +70,8 @@ spec:
   selector:
     app: monolith
   ports:
-  - port: {{ .Values.monolith.service.port }}
-    targetPort: {{ .Values.monolith.service.targetPort }}
+    - name: http
+      port: {{ .Values.monolith.service.port }}
+      targetPort: {{ .Values.monolith.service.targetPort }}
   type: {{ .Values.monolith.service.type }}
 {{- end }}

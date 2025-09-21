@@ -14,8 +14,21 @@
 ![Users](tests/users-topic.png)
 
 ### Запущено через kubernetes
+#### Тесты прошли
 ![Tests](tests/kuber-tests.png)
+
+#### Логи events-service
 ![Events service](tests/kuber-events-service.png)
+
+#### Развертывание через helm
+![Helm](tests/helm-install.png)
+
+#### Вывод https://cinemaabyss.example.com/api/movies
+![Movies](tests/movies-response.png)
+
+#### Работа cirquit breaker-а
+![Fortio](tests/fortio-test.png)
+![Stats](tests/istio-stats.png)
 
 ## Обзор.
  В проекте реализована следующая функциональность:

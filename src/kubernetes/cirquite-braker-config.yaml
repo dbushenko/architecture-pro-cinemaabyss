@@ -1,0 +1,100 @@
+# --- Входной шлюз для всего трафика ---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: cinemaabyss-gateway
+  namespace: cinemaabyss
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "cinemaabyss.example.com"
+
+---
+# --- Правила маршрутизации, включая канареечное развертывание ---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: cinemaabyss-routing
+  namespace: cinemaabyss
+spec:
+  hosts:
+  - "cinemaabyss.example.com"
+  gateways:
+  - cinemaabyss-gateway
+  http:
+  # Правило для канареечного развертывания фильмов
+  - name: "canary-movies-route"
+    match:
+    - uri:
+        prefix: "/api/movies"
+    route:
+    # 90% трафика на старый монолит
+    - destination:
+        host: monolith.cinemaabyss.svc.cluster.local
+        port:
+          number: 8080
+      weight: 90
+    # 10% трафика на новый микросервис фильмов
+    - destination:
+        host: movies-service.cinemaabyss.svc.cluster.local
+        port:
+          number: 8081
+      weight: 10
+
+  # Правило по умолчанию для всего остального трафика
+  - name: "default-proxy-route"
+    route:
+    - destination:
+        host: proxy-service.cinemaabyss.svc.cluster.local
+        port:
+          number: 8000
+
+---
+# --- Правила прерывателя цепи для movies-service ---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: movies-service-circuit-breaker
+  namespace: cinemaabyss
+spec:
+  host: movies-service.cinemaabyss.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 100
+        maxRequestsPerConnection: 10
+    outlierDetection:
+      consecutive5xxErrors: 5
+      interval: 10s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+
+---
+# --- Правила прерывателя цепи для monolith ---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: monolith-circuit-breaker
+  namespace: cinemaabyss
+spec:
+  host: monolith.cinemaabyss.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 100
+        maxRequestsPerConnection: 10
+    outlierDetection:
+      consecutive5xxErrors: 5
+      interval: 10s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
