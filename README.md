@@ -14,8 +14,8 @@
 ![Users](tests/users-topic.png)
 
 ### Запущено через kubernetes
-![Tests](tests/kafka-tests.png)
-![Events service](tests/kafka-events-service.png)
+![Tests](tests/kuber-tests.png)
+![Events service](tests/kuber-events-service.png)
 
 ## Обзор.
  В проекте реализована следующая функциональность:
