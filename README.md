@@ -6,11 +6,16 @@
 
 ## Тесты events-service
 
+### Запущено через docker compose
 ![Тесты прошли](tests/tests.png)
 ![Состояние топиков](tests/topics.png)
 ![Movies](tests/movies-topic.png)
 ![Payments](tests/payments-topic.png)
 ![Users](tests/users-topic.png)
+
+### Запущено через kubernetes
+![Tests](tests/kafka-tests.png)
+![Events service](tests/kafka-events-service.png)
 
 ## Обзор.
  В проекте реализована следующая функциональность:
