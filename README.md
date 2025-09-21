@@ -1,35 +1,5 @@
 # Архитектура микросервисов CinemaAbyss
 
-## Будущая архитектура онлайн-кинотеатра "Кинобездна"
-
-![Целевая экосистема](diagrams/container/cinema-container.png)
-
-## Тесты events-service
-
-### Запущено через docker compose
-![Тесты прошли](tests/tests.png)
-![Состояние топиков](tests/topics.png)
-![Movies](tests/movies-topic.png)
-![Payments](tests/payments-topic.png)
-![Users](tests/users-topic.png)
-
-### Запущено через kubernetes
-#### Тесты прошли
-![Tests](tests/kuber-tests.png)
-
-#### Логи events-service
-![Events service](tests/kuber-events-service.png)
-
-#### Развертывание через helm
-![Helm](tests/helm-install.png)
-
-#### Вывод https://cinemaabyss.example.com/api/movies
-![Movies](tests/movies-response.png)
-
-#### Работа cirquit breaker-а
-![Fortio](tests/fortio-test.png)
-![Stats](tests/istio-stats.png)
-
 ## Обзор.
  В проекте реализована следующая функциональность:
 
