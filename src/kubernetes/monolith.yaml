@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: monolith
-        image:  ghcr.io/db-exp/cinemaabysstest/monolith:latest
+        image:  ghcr.io/dbushenko/architecture-pro-cinemaabyss/monolith:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -68,6 +68,7 @@ spec:
   selector:
     app: monolith
   ports:
-  - port: 8080
+  - name: http
+    port: 8080
     targetPort: 8080
   type: ClusterIP
